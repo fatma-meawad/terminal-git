@@ -18,11 +18,11 @@ RUN curl -L https://github.com/tsl0922/ttyd/releases/download/1.6.3/ttyd.x86_64 
     -o /usr/local/bin/ttyd && chmod +x /usr/local/bin/ttyd
 
 # Set up directories for Ungit and ttyd
-RUN mkdir /workspace
-WORKDIR /workspace
+RUN mkdir /opit
+WORKDIR /opit
 
 # Expose ports for Ungit (8448) and ttyd (7681)
 EXPOSE 8448 7681
 
 # Start both Ungit and ttyd using a shell script
-CMD ["sh", "-c", "ungit --port 8448 --no-b --git /workspace & ttyd -p 7681 bash"]
+CMD ["sh", "-c", "ungit --port 8448 --no-b --git /opit & ttyd -p 7681 bash"]
