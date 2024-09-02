@@ -1,28 +1,19 @@
-# Use an official Node.js runtime as a parent image
-FROM node:16
+# Use the existing ttyd image as the base
+FROM tsl0922/ttyd:latest
 
-# Install required dependencies
+# Install additional tools
+# Install additional tools and dependencies
 RUN apt-get update && apt-get install -y \
     git \
-    build-essential \
-    python3 \
     curl \
     httpie \
+    bash \
+    nano \
     && rm -rf /var/lib/apt/lists/*
+# Copy the custom entrypoint script into the container
 
-# Install Ungit globally
-RUN npm install -g ungit
+EXPOSE 7681
+WORKDIR /root
 
-# Install ttyd
-RUN curl -L https://github.com/tsl0922/ttyd/releases/download/1.6.3/ttyd.x86_64 \
-    -o /usr/local/bin/ttyd && chmod +x /usr/local/bin/ttyd
-
-# Set up directories for Ungit and ttyd
-RUN mkdir /opit
-WORKDIR /opit
-
-# Expose ports for Ungit (8448) and ttyd (7681)
-EXPOSE 8448 7681
-
-# Start both Ungit and ttyd using a shell script
-CMD ["sh", "-c", "ungit --port 8448 --no-b --git /opit & ttyd -p 7681 bash"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["ttyd", "-W", "bash"]
